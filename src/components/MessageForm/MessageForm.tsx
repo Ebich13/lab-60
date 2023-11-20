@@ -1,46 +1,49 @@
 import React, { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import { Message } from '../../types';
 
 interface Props {
-  onSendMessage: (newMessage: Message) => void;
+  onSendMessage: (message: Message) => void;
 }
 
 const MessageForm: React.FC<Props> = ({ onSendMessage }) => {
-  const [message, setMessage] = useState<string>('');
-  const [author, setAuthor] = useState<string>('');
+  const [newMessage, setNewMessage] = useState('');
+  const [author, setAuthor] = useState('');
 
-  const handleSubmit = () => {
-    onSendMessage({ id: '', message, author, datetime: '' });
-    setMessage('');
-    setAuthor('');
+  const sendMessage = () => {
+    const message: Message = {
+      id: '',
+      message: newMessage,
+      author: author,
+      datetime: new Date().toISOString(),
+    };
+
+    onSendMessage(message);
+    setNewMessage('');
   };
 
   return (
-    <div>
-      <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-        <div className="mb-3">
-          <label htmlFor="message" className="form-label">Message</label>
-          <input
-            type="text"
-            className="form-control"
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="author" className="form-label">Author</label>
-          <input
-            type="text"
-            className="form-control"
-            id="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">Send</button>
-      </form>
-    </div>
+    <Form>
+      <Form.Group controlId="message" className="mb-3">
+        <Form.Control
+          type="text"
+          placeholder="Message"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+        />
+      </Form.Group>
+      <Form.Group controlId="author" className="mb-3">
+        <Form.Control
+          type="text"
+          placeholder="Author"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+        />
+      </Form.Group>
+      <Button variant="primary" onClick={sendMessage}>
+        Send
+      </Button>
+    </Form>
   );
 };
 
